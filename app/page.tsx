@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Brain, FileText, Zap, Lock } from "lucide-react";
+import { LoginButton } from "@/components/auth/login-button";
 
 export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,7 +17,9 @@ export default function LandingPage() {
       <header className="container mx-auto px-4 py-8">
         <nav className="flex justify-between items-center">
           <div className="text-2xl font-bold text-blue-600">O.R.I.O.N</div>
-          <Button variant="outline">Login</Button>
+          <LoginButton>
+            <Button variant="outline">Login</Button>
+          </LoginButton>
         </nav>
       </header>
 
