@@ -1,4 +1,6 @@
-import { AppSidebar } from "@/components/app-sidebar";
+"use client";
+import Link from "next/link";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,48 +9,70 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useSidebar } from "@/hooks/use-sidebar";
+import { useStore } from "@/hooks/use-store";
 
-export function DashboardPage() {
+export default function DashboardPage() {
+  const sidebar = useStore(useSidebar, (x) => x);
+  if (!sidebar) return null;
+  const { settings, setSettings } = sidebar;
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+    <ContentLayout title="Dashboard">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <TooltipProvider>
+        <div className="flex gap-6 mt-6">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="is-hover-open"
+                  onCheckedChange={(x) => setSettings({ isHoverOpen: x })}
+                  checked={settings.isHoverOpen}
+                />
+                <Label htmlFor="is-hover-open">Hover Open</Label>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>When hovering on the sidebar in mini state, it will open</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="disable-sidebar"
+                  onCheckedChange={(x) => setSettings({ disabled: x })}
+                  checked={settings.disabled}
+                />
+                <Label htmlFor="disable-sidebar">Disable Sidebar</Label>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Hide sidebar</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </TooltipProvider>
+    </ContentLayout>
   );
 }
-
-export default DashboardPage;
