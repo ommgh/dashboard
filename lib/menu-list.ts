@@ -1,9 +1,5 @@
 import {
-  Tag,
-  Users,
   Settings,
-  Bookmark,
-  SquarePen,
   LayoutGrid,
   LucideIcon,
   BoxIcon,
@@ -11,7 +7,6 @@ import {
   Paperclip,
   PanelTopCloseIcon,
 } from "lucide-react";
-import { FaHandPaper, FaTools } from "react-icons/fa";
 
 type Submenu = {
   href: string;
@@ -49,19 +44,19 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Contents",
       menus: [
         {
-          href: "",
+          href: "/orders",
           label: "Orders",
           icon: BoxIcon,
-          submenus: [
-            {
-              href: "/orders",
-              label: "All Orders",
-            },
-            {
-              href: "/orders/new",
-              label: "New Orders",
-            },
-          ],
+          // submenus: [
+          //   {
+          //     href: "/orders",
+          //     label: "All Orders",
+          //   },
+          //   {
+          //     href: "/orders/new",
+          //     label: "New Orders",
+          //   },
+          // ],
         },
         {
           href: "/returns",

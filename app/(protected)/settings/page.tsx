@@ -7,8 +7,8 @@ import React from "react";
 
 const SettingsPage = () => {
   const session = useSession();
-  const name = session.data?.user.name || "";
-  const image = session.data?.user.image || "";
+  // const name = session.data?.user.name || "";
+  // const email = session.data?.user.email || "";
   console.log(session);
   const onClick = () => {
     signOut();
