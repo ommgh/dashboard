@@ -15,6 +15,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import { signOut, useSession } from "next-auth/react";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -23,6 +24,10 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
+  const session = useSession();
+  const onClick = () => {
+    signOut();
+  };
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -113,12 +118,12 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
-          <li className="w-full grow flex items-end">
+          <li className="w-full grow flex items-end py-5">
             <TooltipProvider disableHoverableContent>
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={onClick}
                     variant="outline"
                     className="w-full justify-center h-10 mt-5"
                   >

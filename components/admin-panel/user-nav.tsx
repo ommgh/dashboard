@@ -20,8 +20,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOut, useSession } from "next-auth/react";
 
 export function UserNav() {
+  const session = useSession();
+  const name = session.data?.user.name || "";
+  const email = session.data?.user.email || "";
+  const avatar = session.data?.user.image || "";
+  const onClick = () => {
+    signOut();
+  };
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -33,7 +41,7 @@ export function UserNav() {
                 className="relative h-8 w-8 rounded-full"
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="#" alt="Avatar" />
+                  <AvatarImage src={avatar} alt="Avatar" />
                   <AvatarFallback className="bg-transparent">OM</AvatarFallback>
                 </Avatar>
               </Button>
@@ -46,9 +54,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Om Mishra</p>
+            <p className="text-sm font-medium leading-none">{name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              om.works01@gmail.com
+              {email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -68,7 +76,7 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
+        <DropdownMenuItem className="hover:cursor-pointer" onClick={onClick}>
           <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
           Sign out
         </DropdownMenuItem>

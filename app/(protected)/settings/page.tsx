@@ -9,7 +9,6 @@ const SettingsPage = () => {
   const session = useSession();
   // const name = session.data?.user.name || "";
   // const email = session.data?.user.email || "";
-  console.log(session);
   const onClick = () => {
     signOut();
   };

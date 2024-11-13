@@ -112,7 +112,8 @@ export default function Component() {
                       <Image
                         src="/shopify-logo.png"
                         alt="Shopify"
-                        className="h-4 w-4"
+                        height={15}
+                        width={15}
                       />
                       <span className="text-sm">Shopify</span>
                     </div>
