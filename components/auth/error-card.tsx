@@ -2,7 +2,7 @@ import { Header } from "./header";
 import { BackButton } from "./back-button";
 import { Card, CardHeader, CardFooter } from "@/components/ui/card";
 
-export const ErrorCard = (props: any) => {
+export const ErrorCard = () => {
   return (
     <Card>
       <CardHeader>

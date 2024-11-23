@@ -77,6 +77,14 @@ export default function ConnectStorePage() {
           >
             {isLoading ? "Connecting..." : "Connect"}
           </Button>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="px-4 py-2 rounded disabled:opacity-50"
+            onClick={() => router.push("/orders")}
+          >
+            {isLoading ? "Fetching..." : "Go To Orders"}
+          </Button>
         </form>
       </div>
     </ContentLayout>

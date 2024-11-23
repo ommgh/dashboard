@@ -1,14 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const SettingsPage = () => {
-  const session = useSession();
-  // const name = session.data?.user.name || "";
-  // const email = session.data?.user.email || "";
   const onClick = () => {
     signOut();
   };

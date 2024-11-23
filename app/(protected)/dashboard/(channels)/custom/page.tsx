@@ -92,7 +92,9 @@ export default function ConnectStorePage() {
                   label="API Key"
                 ></CopyInput>
               </div>
-              <Button onClick={() => router.push("/orders")}>Done</Button>
+              <Button onClick={() => router.push("/orders/custom")}>
+                Done
+              </Button>
               <div className="p-4 rounded border mt-4">
                 <ol className=" flex flex-col items-start justify-start gap-3">
                   <li className="text-sm">

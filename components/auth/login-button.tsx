@@ -10,7 +10,6 @@ interface LoginButtonProps {
 export const LoginButton = ({
   children,
   mode = "redirect",
-  aschild,
 }: LoginButtonProps) => {
   const router = useRouter();
   const onClick = () => {
