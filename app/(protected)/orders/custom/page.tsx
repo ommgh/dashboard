@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -11,6 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Table,
   TableBody,
@@ -19,42 +26,61 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MoreHorizontal } from "lucide-react";
-import { db } from "@/lib/db";
-import { Order, OrderStatus } from "@prisma/client";
+import {
+  Calendar as CalendarIcon,
+  Download,
+  MoreHorizontal,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
+
+// Define types for our data
+interface Order {
+  id: string;
+  orderId: string;
+  productName: string;
+  quantity: number;
+  productPrice: number;
+  orderStatus: string;
+  createdAt: string;
+}
 
 export default function OrdersPage() {
   const { data: session } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchOrders = async () => {
-    try {
-      if (!session?.user?.id) {
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        if (!session?.user?.id) {
+          setOrders([]);
+          setIsLoading(false);
+          return;
+        }
+
+        // Fetch orders from your API endpoint
+        const response = await fetch("/api/custom/get");
+        const data = await response.json();
+
+        if (response.ok) {
+          setOrders(data);
+        } else {
+          console.error("Failed to fetch orders:", data);
+          setOrders([]);
+        }
+      } catch (error) {
+        console.error("Error fetching orders:", error);
         setOrders([]);
-        return;
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      setIsLoading(true);
-      const userOrders = await db.order.findMany({
-        where: {
-          userId: session.user.id,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+    fetchOrders();
+  }, [session?.user?.id]);
 
-      setOrders(userOrders);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      setOrders([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const formatDate = (dateString: Date) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString("en-US", {
       day: "2-digit",
       month: "short",
@@ -64,49 +90,82 @@ export default function OrdersPage() {
     });
   };
 
-  const formatPrice = (price: any) => {
+  const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-    }).format(Number(price));
+    }).format(price);
   };
 
-  const getStatusColor = (status: OrderStatus) => {
-    switch (status) {
-      case "DELIVERED":
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "completed":
         return "text-green-500";
-      case "PENDING":
-      case "PROCESSING":
+      case "pending":
         return "text-yellow-500";
-      case "CANCELLED":
+      case "cancelled":
         return "text-red-500";
       default:
         return "text-gray-500";
     }
   };
 
+  if (isLoading) {
+    return (
+      <ContentLayout title="Orders">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-muted-foreground">Loading orders...</div>
+        </div>
+      </ContentLayout>
+    );
+  }
+
   return (
     <ContentLayout title="Orders">
       <div className="flex flex-col h-full">
         <header className="border-b">
-          <div className="flex items-center justify-between p-4">
-            <h2 className="text-lg font-semibold">Orders List</h2>
-            <div className="flex gap-2">
-              <Button className="bg-primary text-primary-foreground">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 gap-4">
+            <div className="flex-1 w-full sm:max-w-3xl">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search orders by ID, product name, or status"
+                  className="pl-8"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Button className="bg-primary text-primary-foreground w-full sm:w-auto">
                 + Add Order
-              </Button>
-              <Button
-                onClick={fetchOrders}
-                disabled={isLoading}
-                variant="outline"
-              >
-                {isLoading ? "Syncing..." : "Sync Orders"}
               </Button>
             </div>
           </div>
         </header>
 
-        <div className="p-4">
+        <div className="p-4 space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <CalendarIcon className="h-4 w-4" />
+                    Last 30 days
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar mode="range" numberOfMonths={2} />
+                </PopoverContent>
+              </Popover>
+              <Button variant="outline" className="gap-2">
+                <SlidersHorizontal className="h-4 w-4" />
+                More Filters
+              </Button>
+            </div>
+            <Button variant="ghost" size="icon" className="sm:hidden">
+              <Download className="h-4 w-4" />
+            </Button>
+          </div>
+
           <div className="rounded-lg border overflow-hidden">
             <Table>
               <TableHeader>
@@ -126,9 +185,7 @@ export default function OrdersPage() {
                 {orders.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
-                      {isLoading
-                        ? "Loading orders..."
-                        : "No orders found. Click 'Sync Orders' to fetch your orders."}
+                      No orders found
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -147,7 +204,9 @@ export default function OrdersPage() {
                         <div className="font-medium">{order.productName}</div>
                       </TableCell>
                       <TableCell>{order.quantity}</TableCell>
-                      <TableCell>{formatPrice(order.productPrice)}</TableCell>
+                      <TableCell>
+                        {formatPrice(Number(order.productPrice))}
+                      </TableCell>
                       <TableCell>
                         <div
                           className={`text-sm font-medium ${getStatusColor(
@@ -179,6 +238,18 @@ export default function OrdersPage() {
                 )}
               </TableBody>
             </Table>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {orders.length} orders
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" disabled>
+                Previous
+              </Button>
+              <Button variant="outline">Next</Button>
+            </div>
           </div>
         </div>
       </div>
