@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
-import { Prisma } from "@prisma/client";
-import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
@@ -13,12 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Table,
   TableBody,
@@ -27,53 +19,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Calendar as CalendarIcon,
-  Download,
-  MoreHorizontal,
-  Search,
-  SlidersHorizontal,
-} from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { db } from "@/lib/db";
 import { Order, OrderStatus } from "@prisma/client";
 
 export default function OrdersPage() {
   const { data: session } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        if (!session?.user?.id) {
-          setOrders([]);
-          setIsLoading(false);
-          return;
-        }
-
-        const userOrders = await db.order.findMany({
-          where: {
-            userId: session.user.id,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-
-        setOrders(userOrders);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
+  const fetchOrders = async () => {
+    try {
+      if (!session?.user?.id) {
         setOrders([]);
-      } finally {
-        setIsLoading(false);
+        return;
       }
-    };
 
-    fetchOrders();
-  }, [session?.user?.id]);
+      setIsLoading(true);
+      const userOrders = await db.order.findMany({
+        where: {
+          userId: session.user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
 
-  const formatDate = (dateString: string | Date) => {
+      setOrders(userOrders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: Date) => {
     return new Date(dateString).toLocaleString("en-US", {
       day: "2-digit",
       month: "short",
@@ -82,7 +63,8 @@ export default function OrdersPage() {
       minute: "2-digit",
     });
   };
-  const formatPrice = (price: number | Prisma.Decimal) => {
+
+  const formatPrice = (price: any) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
@@ -103,61 +85,28 @@ export default function OrdersPage() {
     }
   };
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.orderId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.orderStatus.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <ContentLayout title="Orders">
       <div className="flex flex-col h-full">
         <header className="border-b">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 gap-4">
-            <div className="flex-1 w-full sm:max-w-3xl">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search orders by ID, product name, or status"
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Button className="bg-primary text-primary-foreground w-full sm:w-auto">
+          <div className="flex items-center justify-between p-4">
+            <h2 className="text-lg font-semibold">Orders List</h2>
+            <div className="flex gap-2">
+              <Button className="bg-primary text-primary-foreground">
                 + Add Order
+              </Button>
+              <Button
+                onClick={fetchOrders}
+                disabled={isLoading}
+                variant="outline"
+              >
+                {isLoading ? "Syncing..." : "Sync Orders"}
               </Button>
             </div>
           </div>
         </header>
 
-        <div className="p-4 space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    <CalendarIcon className="h-4 w-4" />
-                    Last 30 days
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar mode="range" numberOfMonths={2} />
-                </PopoverContent>
-              </Popover>
-              <Button variant="outline" className="gap-2">
-                <SlidersHorizontal className="h-4 w-4" />
-                More Filters
-              </Button>
-            </div>
-            <Button variant="ghost" size="icon" className="sm:hidden">
-              <Download className="h-4 w-4" />
-            </Button>
-          </div>
-
+        <div className="p-4">
           <div className="rounded-lg border overflow-hidden">
             <Table>
               <TableHeader>
@@ -174,20 +123,16 @@ export default function OrdersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {isLoading ? (
+                {orders.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
-                      Loading orders...
-                    </TableCell>
-                  </TableRow>
-                ) : filteredOrders.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      No orders found
+                      {isLoading
+                        ? "Loading orders..."
+                        : "No orders found. Click 'Sync Orders' to fetch your orders."}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredOrders.map((order) => (
+                  orders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell>
                         <Checkbox />
@@ -234,18 +179,6 @@ export default function OrdersPage() {
                 )}
               </TableBody>
             </Table>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-muted-foreground">
-              Showing {filteredOrders.length} orders
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" disabled>
-                Previous
-              </Button>
-              <Button variant="outline">Next</Button>
-            </div>
           </div>
         </div>
       </div>
