@@ -47,16 +47,16 @@ export function getMenuList(pathname: string): Group[] {
           href: "/orders",
           label: "Orders",
           icon: BoxIcon,
-          // submenus: [
-          //   {
-          //     href: "/orders",
-          //     label: "All Orders",
-          //   },
-          //   {
-          //     href: "/orders/new",
-          //     label: "New Orders",
-          //   },
-          // ],
+          submenus: [
+            {
+              href: "/orders",
+              label: "Shopify",
+            },
+            {
+              href: "/orders/custom",
+              label: "Custom",
+            },
+          ],
         },
         {
           href: "/returns",

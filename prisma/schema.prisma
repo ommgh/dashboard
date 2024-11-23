@@ -7,21 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole{
-  ADMIN
-  TEAM
-  USER
-}
-
 model User {
-  id            String          @id @default(cuid())
+  id            String             @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String             @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  role          UserRole @default(USER)
   accounts      Account[]
+  channels      EcommerceChannel[]
+  orders        Order[]
 }
 
 model Account {
@@ -36,20 +31,65 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([provider, providerAccountId])
 }
 
-model VerificationToken{
-  id               String @id @default(cuid())
-  email            String
-  token            String @unique
-  expires          DateTime
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
 
-  @@unique([email,token])
+  @@unique([email, token])
+}
+
+enum Platform {
+  SHOPIFY
+  EBAY
+  CUSTOM
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model EcommerceChannel {
+  id         String   @id @default(cuid())
+  userId     String
+  platform   Platform 
+  name       String?  // Name of the store or custom label
+  apiKey     String?  // API key for the channel (if applicable)
+  apiSecret  String?  // API secret (if applicable)
+  webhookUrl String?  // URL for receiving updates
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders     Order[]
+
+  @@unique([userId, platform])
+}
+
+model Order {
+  id           String           @id @default(cuid())
+  userId       String
+  channelId    String
+  orderId      String          // Original order ID from the channel
+  productName  String
+  productPrice Decimal         @db.Decimal(10, 2) 
+  quantity     Int
+  orderStatus  OrderStatus     
+  createdAt    DateTime        @default(now())   
+  updatedAt    DateTime        @updatedAt
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel      EcommerceChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, orderId])
 }

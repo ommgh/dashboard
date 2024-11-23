@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,8 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { on } from "events";
 import { ArrowRight, Globe, ShoppingBag, ShoppingCart } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const channels = [
   {
@@ -16,28 +19,26 @@ const channels = [
     description:
       "Integrate your Shopify store to sync products, orders, and customers.",
     icon: "/shopify-logo.png?height=40&width=40",
+    onClick: "/dashboard/shopify",
   },
   {
     name: "eBay",
     description:
       "Connect your eBay account to manage listings and orders in one place.",
     icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131597/pngwing.com_3_mxpikp.png?height=40&width=40",
-  },
-  {
-    name: "WooCommerce",
-    description:
-      "Sync your WooCommerce store with our dashboard for seamless management.",
-    icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131730/Woo-logo-white_cmz10r.png?height=40&width=40",
+    onClick: "/dashboard/ebay",
   },
   {
     name: "Custom Website",
     description:
       "Use our API to integrate sales from your custom-built website.",
     icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131882/16646018_rgbuhm.jpg?height=40&width=40",
+    onClick: "/dashboard/custom",
   },
 ];
 
 export default function IntegrateChannelsPage() {
+  const router = useRouter();
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-2">Integrate Sales Channels</h1>
@@ -65,7 +66,10 @@ export default function IntegrateChannelsPage() {
               <CardDescription>{channel.description}</CardDescription>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">
+              <Button
+                className="w-full"
+                onClick={() => router.push(channel.onClick)}
+              >
                 Integrate
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
