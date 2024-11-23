@@ -1,6 +1,10 @@
-// app/orders/page.tsx
+"use client";
+
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
+import { Prisma } from "@prisma/client";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -31,47 +35,45 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { db } from "@/lib/db";
-import { auth } from "@/auth";
+import { Order, OrderStatus } from "@prisma/client";
 
-async function getOrders() {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return [];
-    }
+export default function OrdersPage() {
+  const { data: session } = useSession();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
-    // First get the channel associated with the user
-    const channel = await db.ecommerceChannel.findFirst({
-      where: {
-        userId: session.user.id,
-      },
-    });
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        if (!session?.user?.id) {
+          setOrders([]);
+          setIsLoading(false);
+          return;
+        }
 
-    if (!channel) {
-      return [];
-    }
+        const userOrders = await db.order.findMany({
+          where: {
+            userId: session.user.id,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
 
-    // Then fetch orders for that channel
-    const orders = await db.order.findMany({
-      where: {
-        channelId: channel.id,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        setOrders(userOrders);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        setOrders([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return orders;
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    return [];
-  }
-}
+    fetchOrders();
+  }, [session?.user?.id]);
 
-export default async function OrdersPage() {
-  const orders = await getOrders();
-
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | Date) => {
     return new Date(dateString).toLocaleString("en-US", {
       day: "2-digit",
       month: "short",
@@ -80,26 +82,33 @@ export default async function OrdersPage() {
       minute: "2-digit",
     });
   };
-
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | Prisma.Decimal) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-    }).format(price);
+    }).format(Number(price));
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "completed":
+  const getStatusColor = (status: OrderStatus) => {
+    switch (status) {
+      case "DELIVERED":
         return "text-green-500";
-      case "pending":
+      case "PENDING":
+      case "PROCESSING":
         return "text-yellow-500";
-      case "cancelled":
+      case "CANCELLED":
         return "text-red-500";
       default:
         return "text-gray-500";
     }
   };
+
+  const filteredOrders = orders.filter(
+    (order) =>
+      order.orderId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.orderStatus.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <ContentLayout title="Orders">
@@ -112,6 +121,8 @@ export default async function OrdersPage() {
                 <Input
                   placeholder="Search orders by ID, product name, or status"
                   className="pl-8"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
@@ -163,14 +174,20 @@ export default async function OrdersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.length === 0 ? (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8">
+                      Loading orders...
+                    </TableCell>
+                  </TableRow>
+                ) : filteredOrders.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8">
                       No orders found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  orders.map((order) => (
+                  filteredOrders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell>
                         <Checkbox />
@@ -178,16 +195,14 @@ export default async function OrdersPage() {
                       <TableCell>
                         <div className="font-medium">{order.orderId}</div>
                         <div className="text-sm text-muted-foreground">
-                          {formatDate(order.createdAt.toString())}
+                          {formatDate(order.createdAt)}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="font-medium">{order.productName}</div>
                       </TableCell>
                       <TableCell>{order.quantity}</TableCell>
-                      <TableCell>
-                        {formatPrice(Number(order.productPrice))}
-                      </TableCell>
+                      <TableCell>{formatPrice(order.productPrice)}</TableCell>
                       <TableCell>
                         <div
                           className={`text-sm font-medium ${getStatusColor(
@@ -223,7 +238,7 @@ export default async function OrdersPage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-sm text-muted-foreground">
-              Showing {orders.length} orders
+              Showing {filteredOrders.length} orders
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" disabled>
