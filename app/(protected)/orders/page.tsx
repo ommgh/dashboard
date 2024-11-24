@@ -35,6 +35,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Define TypeScript interfaces for our data
 interface Money {
@@ -274,7 +275,9 @@ export default function Component() {
                       </TableCell>
                       <TableCell>
                         <div className="flex justify-center items-center gap-5">
-                          <Button size="sm">Ship Now</Button>
+                          <Link href={`/orders/${order.node.name}/ship`}>
+                            <Button size="sm">Ship Now</Button>
+                          </Link>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon">

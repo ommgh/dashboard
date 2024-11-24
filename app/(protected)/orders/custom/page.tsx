@@ -33,6 +33,7 @@ import {
   Search,
   SlidersHorizontal,
 } from "lucide-react";
+import Link from "next/link";
 
 // Define types for our data
 interface Order {
@@ -217,6 +218,9 @@ export default function OrdersPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
+                        <Link href={`/orders/${order.id}/ship`}>
+                          <Button size="sm">Ship Now</Button>
+                        </Link>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">

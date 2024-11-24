@@ -6,6 +6,7 @@ import {
   ArrowDownCircleIcon,
   Paperclip,
   PanelTopCloseIcon,
+  Brain,
 } from "lucide-react";
 
 type Submenu = {
@@ -59,14 +60,23 @@ export function getMenuList(pathname: string): Group[] {
           ],
         },
         {
-          href: "/returns",
-          label: "Returns",
-          icon: ArrowDownCircleIcon,
-        },
-        {
           href: "/tools",
-          label: "Tools",
-          icon: PanelTopCloseIcon,
+          label: "AI Tools",
+          icon: Brain,
+          submenus: [
+            {
+              href: "/tools/visuals",
+              label: "Visuals",
+            },
+            {
+              href: "tools/chat",
+              label: "Chat",
+            },
+            {
+              href: "tools/optimize",
+              label: "Optimize",
+            },
+          ],
         },
       ],
     },
