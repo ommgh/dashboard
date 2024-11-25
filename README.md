@@ -64,8 +64,7 @@ npm run start
 
 This project is licensed under the MIT License
 
-## Testing 
-   ### Credential
+## Test Credential
 ```text
 email:    testuser@gmail.com
 password: test@password
