@@ -42,7 +42,7 @@ export function UserNav() {
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={avatar} alt="Avatar" />
-                  <AvatarFallback className="bg-transparent">OM</AvatarFallback>
+                  <AvatarFallback className="bg-transparent">TU</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

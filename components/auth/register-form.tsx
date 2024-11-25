@@ -46,7 +46,6 @@ export const RegisterForm = () => {
       headerLabel="Create an account"
       backButtonHref="/auth/login"
       backButtonLabel="Already have an account? Sign in"
-      showSocials
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -81,7 +80,7 @@ export const RegisterForm = () => {
                       disabled={isPending}
                       {...field}
                       type="email"
-                      placeholder="om.works01@gmail.com"
+                      placeholder="youremail@gmail.com"
                       className="w-full"
                     />
                   </FormControl>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ShopifyInfo from "@/components/shopify/Info";
 
 export default function ConnectStorePage() {
   const router = useRouter();
@@ -36,6 +37,9 @@ export default function ConnectStorePage() {
   return (
     <ContentLayout title="Shopify">
       <div className="max-w-4xl mx-auto p-6 items-center justify-center">
+        <div className="flex items-end justify-end">
+          <ShopifyInfo />
+        </div>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <label className="block mb-2">Access Token</label>
