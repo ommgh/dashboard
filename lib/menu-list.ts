@@ -69,11 +69,11 @@ export function getMenuList(pathname: string): Group[] {
               label: "Visuals",
             },
             {
-              href: "tools/chat",
+              href: "/tools/chat",
               label: "Chat",
             },
             {
-              href: "tools/optimize",
+              href: "/tools/optimize",
               label: "Optimize",
             },
           ],

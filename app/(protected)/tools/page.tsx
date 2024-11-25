@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, MessageSquare, Coins } from "lucide-react";
-import { Content } from "next/font/google";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 
 const tools = [
