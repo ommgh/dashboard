@@ -80,7 +80,7 @@ export const RegisterForm = () => {
                       disabled={isPending}
                       {...field}
                       type="email"
-                      placeholder="youremail@gmail.com"
+                      placeholder="testuser@gmail.com"
                       className="w-full"
                     />
                   </FormControl>
@@ -99,7 +99,7 @@ export const RegisterForm = () => {
                       {...field}
                       disabled={isPending}
                       type="password"
-                      placeholder="********"
+                      placeholder="test@password"
                       className="w-full"
                     />
                   </FormControl>
