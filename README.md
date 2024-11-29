@@ -2,11 +2,17 @@
 
 A Versatile Tool for Amazon MCF
 
+## Test Credential
+
+```text
+email:    testuser@gmail.com
+password: test@password
+```
+
 ## Prerequisites
 
 - Node.js (version 18.x or later)
 - npm or Yarn
-- Amazon Marketplace Account
 
 ## Setup
 
@@ -53,28 +59,14 @@ npm run build
 npm run start
 ```
 
-## Features
-
-- Next.js App Router
-- Authentication (GitHub, Google)
-- Database Integration
-- Email Services
-- AI-Powered Insights
-
 ## Tech Stack
 
 - Next.js
-- React
 - TypeScript
 - Prisma
 - NextAuth
-- Resend
 - Google Gemini API
 
 ## License
 
 This project is licensed under the MIT License
-
-## Contributing
-
-Please read `CONTRIBUTING.md` for details on our code of conduct and the process for submitting pull requests.
