@@ -12,16 +12,22 @@ async function getOrder(orderId: string) {
   return order;
 }
 
+async function updateOrder(orderId: string) {
+  db.order.update({
+    where: { id: orderId },
+    data: { orderStatus: "SHIPPED" },
+  });
+}
+
 export default async function ShipOrderPage({
   params,
 }: {
   params: { orderId: string };
 }) {
   const order = await getOrder(params.orderId);
-
   return (
     <ContentLayout title="Ship Order">
-      <div className=" h-[60vh] w-full mx-auto">
+      <div className=" min-h-screen w-full mx-auto">
         <ShipOrderForm order={order} />
       </div>
     </ContentLayout>

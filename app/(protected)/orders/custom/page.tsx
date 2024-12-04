@@ -35,7 +35,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// Define types for our data
 interface Order {
   id: string;
   orderId: string;
@@ -60,7 +59,6 @@ export default function OrdersPage() {
           return;
         }
 
-        // Fetch orders from your API endpoint
         const response = await fetch("/api/custom/get");
         const data = await response.json();
 

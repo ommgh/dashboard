@@ -5,23 +5,21 @@ import { useRouter } from "next/navigation";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ShopifyInfo from "@/components/shopify/Info";
 
-export default function ConnectStorePage() {
+export default function EbayPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [storeName, setStoreName] = useState("");
-  const [storeUrl, setStoreUrl] = useState("");
   const [apiKey, setapiKey] = useState("");
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/shopify/link", {
+      const response = await fetch("/api/ebay/link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storeName, storeUrl, apiKey }),
+        body: JSON.stringify({ storeName, apiKey }),
       });
 
       if (!response.ok) {
@@ -35,11 +33,9 @@ export default function ConnectStorePage() {
   };
 
   return (
-    <ContentLayout title="Shopify">
+    <ContentLayout title="E-BAY">
       <div className="max-w-4xl mx-auto p-6 items-center justify-center">
-        <div className="flex items-end justify-end">
-          <ShopifyInfo />
-        </div>
+        <div className="flex items-end justify-end"></div>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <label className="block mb-2">Access Token</label>
@@ -48,7 +44,7 @@ export default function ConnectStorePage() {
               value={apiKey}
               onChange={(e) => setapiKey(e.target.value)}
               className="border p-2 w-full rounded"
-              placeholder="SH-XXXXX"
+              placeholder="V1-XXXXX"
               required
             />
           </div>
@@ -60,17 +56,6 @@ export default function ConnectStorePage() {
               onChange={(e) => setStoreName(e.target.value)}
               className="border p-2 w-full rounded"
               placeholder="Your Store Name"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-2">Store URL</label>
-            <Input
-              type="url"
-              value={storeUrl}
-              onChange={(e) => setStoreUrl(e.target.value)}
-              className="border p-2 w-full rounded"
-              placeholder="https://yourstorename.myshopify.com"
               required
             />
           </div>
@@ -86,7 +71,7 @@ export default function ConnectStorePage() {
               type="submit"
               disabled={isLoading}
               className="px-4 py-2 rounded disabled:opacity-50"
-              onClick={() => router.push("/orders")}
+              onClick={() => router.push("/orders/ebay")}
             >
               {isLoading ? "Fetching..." : "Go To Orders"}
             </Button>

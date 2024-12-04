@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-
 import { db } from "@/lib/db";
-import crypto from "crypto";
 import { auth } from "@/auth";
-
-// Generated a secure API key
-function generateApiKey() {
-  return `dk_${crypto.randomBytes(24).toString("hex")}`;
-}
 
 export async function POST(req: Request) {
   try {
@@ -18,22 +11,19 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { storeName, storeUrl } = body;
+    const { storeName, apiKey } = body;
 
-    if (!storeName || !storeUrl) {
+    if (!storeName || !apiKey) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
-
-    // Generated an API key for this channel
-    const apiKey = generateApiKey();
 
     // Created a new channel for the user
     const channel = await db.ecommerceChannel.create({
       data: {
         name: storeName,
-        platform: "CUSTOM",
+        platform: "EBAY",
         apiKey: apiKey,
-        webhookUrl: storeUrl,
+        webhookUrl: "https://ebay.com",
         userId: session.user.id,
       },
     });

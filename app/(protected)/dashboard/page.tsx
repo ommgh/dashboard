@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,9 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import useCurrentUser from "@/hooks/use-current-user";
+import { useEffect, useState } from "react";
+import { Platform } from "@prisma/client";
+import { getIntegratedChannels } from "@/hooks/integrations";
 
 const channels = [
   {
@@ -18,6 +22,7 @@ const channels = [
     description:
       "Integrate your Shopify store to sync products, orders, and customers.",
     icon: "/shopify-logo.png?height=40&width=40",
+    platform: Platform.SHOPIFY,
     onClick: "/dashboard/shopify",
   },
   {
@@ -25,6 +30,7 @@ const channels = [
     description:
       "Connect your eBay account to manage listings and orders in one place.",
     icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131597/pngwing.com_3_mxpikp.png?height=40&width=40",
+    platform: Platform.EBAY,
     onClick: "/dashboard/ebay",
   },
   {
@@ -32,12 +38,26 @@ const channels = [
     description:
       "Use our API to integrate sales from your custom-built website.",
     icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131882/16646018_rgbuhm.jpg?height=40&width=40",
+    platform: Platform.CUSTOM,
     onClick: "/dashboard/custom",
   },
 ];
 
 export default function IntegrateChannelsPage() {
   const router = useRouter();
+  const user = useCurrentUser();
+  const [integratedChannels, setIntegratedChannels] = useState<Platform[]>([]);
+
+  useEffect(() => {
+    async function fetchChannels() {
+      if (user?.id) {
+        const channels = await getIntegratedChannels(user.id);
+        setIntegratedChannels(channels);
+      }
+    }
+    fetchChannels();
+  }, [user?.id]);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-2">Integrate Sales Channels</h1>
@@ -66,11 +86,13 @@ export default function IntegrateChannelsPage() {
             </CardContent>
             <CardFooter>
               <Button
-                className="w-full"
                 onClick={() => router.push(channel.onClick)}
+                disabled={integratedChannels.includes(channel.platform)}
+                className="w-full disabled:bg-green-500"
               >
-                Integrate
-                <ArrowRight className="ml-2 h-4 w-4" />
+                {integratedChannels.includes(channel.platform)
+                  ? "Connected"
+                  : "Integrate"}
               </Button>
             </CardFooter>
           </Card>
