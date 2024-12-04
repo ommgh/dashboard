@@ -6,6 +6,7 @@ import CopyInput from "@/components/copy-input";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ConnectStorePage() {
   const router = useRouter();
@@ -77,36 +78,109 @@ export default function ConnectStorePage() {
             </Button>
           </form>
         ) : (
-          <div className="p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Your API Keys</h2>
-            <div className="space-y-4">
-              <div>
-                <CopyInput
-                  value={apiDetails.channelId}
-                  label="Channel ID"
-                ></CopyInput>
-              </div>
-              <div>
-                <CopyInput
-                  value={apiDetails.apiKey}
-                  label="API Key"
-                ></CopyInput>
-              </div>
-              <Button onClick={() => router.push("/orders/custom")}>
-                Done
-              </Button>
-              <div className="p-4 rounded border mt-4">
-                <ol className=" flex flex-col items-start justify-start gap-3">
-                  <li className="text-sm">
-                    - Save these credentials securely, the API key will not be
-                    shown again
-                  </li>
-                  <li className="text-sm">
-                    - You can use this to send orders from your website
-                  </li>
-                </ol>
+          <div className="p-6 rounded-lg space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Your API Keys</h2>
+              <div className="space-y-4">
+                <div>
+                  <CopyInput
+                    value={apiDetails.channelId}
+                    label="Channel ID"
+                  ></CopyInput>
+                </div>
+                <div>
+                  <CopyInput
+                    value={apiDetails.apiKey}
+                    label="API Key"
+                  ></CopyInput>
+                </div>
+                <Button onClick={() => router.push("/orders/custom")}>
+                  Done
+                </Button>
+                <div className="p-4 rounded border mt-4">
+                  <ol className="flex flex-col items-start justify-start gap-3">
+                    <li className="text-sm">
+                      - Save these credentials securely, the API key will not be
+                      shown again
+                    </li>
+                    <li className="text-sm">
+                      - You can use this to send orders from your website
+                    </li>
+                  </ol>
+                </div>
               </div>
             </div>
+
+            {/* API Documentation Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Dashboard API Integration Guide</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="font-semibold mb-2">Overview</h3>
+                    <p className="text-sm">
+                      Use the following credentials to integrate our Dashboard
+                      API into your application.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold mb-2">
+                      Required Environment Variables
+                    </h3>
+                    <div className="bg-gray-900 p-3 rounded">
+                      <p className="text-sm mb-2">
+                        <span className="font-medium">DASHBOARD_API_KEY:</span>{" "}
+                        {apiDetails.apiKey}
+                      </p>
+                      <p className="text-sm">
+                        <span className="font-medium">STORE_CHANNEL_ID:</span>{" "}
+                        {apiDetails.channelId}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold mb-2">
+                      Authentication Headers
+                    </h3>
+                    <pre className="bg-gray-900 p-3 rounded text-xs overflow-x-auto">
+                      {`headers: {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer ${apiDetails.apiKey}",
+  "X-Channel-ID": "${apiDetails.channelId}"
+}`}
+                    </pre>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold mb-2">
+                      Example: Sending an Order
+                    </h3>
+                    <pre className="bg-gray-900 p-3 rounded text-xs overflow-x-auto">
+                      {`fetch('/api/custom/orders', {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer ${apiDetails.apiKey}",
+    "X-Channel-ID": "${apiDetails.channelId}"
+  },
+  body: JSON.stringify({
+    channelOrderId: "order_123",
+    productName: "Sample Product",
+    productPrice: 49.99,
+    quantity: 1,
+    orderStatus: "PENDING",
+    channelId: "${apiDetails.channelId}"
+  })
+})`}
+                    </pre>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>
