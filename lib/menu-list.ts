@@ -65,16 +65,16 @@ export function getMenuList(pathname: string): Group[] {
           icon: Brain,
           submenus: [
             {
-              href: "/tools/visuals",
-              label: "Visuals",
+              href: "/tools/optimize",
+              label: "Optimize",
             },
             {
               href: "/tools/chat",
               label: "Chat",
             },
             {
-              href: "/tools/optimize",
-              label: "Optimize",
+              href: "/tools/visuals",
+              label: "Visuals",
             },
           ],
         },

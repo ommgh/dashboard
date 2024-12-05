@@ -26,20 +26,20 @@ const channels = [
     onClick: "/dashboard/shopify",
   },
   {
-    name: "eBay",
-    description:
-      "Connect your eBay account to manage listings and orders in one place.",
-    icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131597/pngwing.com_3_mxpikp.png?height=40&width=40",
-    platform: Platform.EBAY,
-    onClick: "/dashboard/ebay",
-  },
-  {
     name: "Custom Website",
     description:
       "Use our API to integrate sales from your custom-built website.",
     icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131882/16646018_rgbuhm.jpg?height=40&width=40",
     platform: Platform.CUSTOM,
     onClick: "/dashboard/custom",
+  },
+  {
+    name: "eBay",
+    description:
+      "Connect your eBay account to manage listings and orders in one place.",
+    icon: "https://res.cloudinary.com/dcwsgwsfw/image/upload/v1732131597/pngwing.com_3_mxpikp.png?height=40&width=40",
+    platform: Platform.EBAY,
+    onClick: "/dashboard/ebay",
   },
 ];
 
