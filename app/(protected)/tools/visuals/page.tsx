@@ -9,8 +9,44 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import MapPage from "./map";
+import Charts from "./charts";
+import { WorldMap } from "@/components/ui/world-map";
 
 export default function ToolsPage() {
+  const dots = [
+    {
+      start: {
+        lat: 64.2008,
+        lng: -149.4937,
+      }, // Alaska (Fairbanks)
+      end: {
+        lat: 34.0522,
+        lng: -118.2437,
+      }, // Los Angeles
+    },
+    {
+      start: { lat: 64.2008, lng: -149.4937 }, // Alaska (Fairbanks)
+      end: { lat: -15.7975, lng: -47.8919 }, // Brazil (Brasília)
+    },
+    {
+      start: { lat: -15.7975, lng: -47.8919 }, // Brazil (Brasília)
+      end: { lat: 38.7223, lng: -9.1393 }, // Lisbon
+    },
+    {
+      start: { lat: 51.5074, lng: -0.1278 }, // London
+      end: { lat: 28.6139, lng: 77.209 }, // New Delhi
+    },
+    {
+      start: { lat: 28.6139, lng: 77.209 }, // New Delhi
+      end: { lat: -10.1632, lng: 76.6413 }, //Kerela
+    },
+    {
+      start: { lat: 28.6139, lng: 77.209 }, // New Delhi
+      end: { lat: -1.2921, lng: 36.8219 }, // Nairobi
+    },
+  ];
+
   return (
     <ContentLayout title="AI Tools">
       <Breadcrumb>
@@ -39,16 +75,7 @@ export default function ToolsPage() {
         </BreadcrumbList>
       </Breadcrumb>
       <div className=" p-5 h-full w-full items-center justify-center">
-        <iframe
-          width="1400"
-          height="770"
-          src="https://lookerstudio.google.com/embed/reporting/46fb59c1-aa35-4e08-80a4-b75c5cd5914f/page/HkkVE"
-          frameBorder="0"
-          style={{ border: 0 }}
-          allowFullScreen
-          sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          title="Looker Studio Report"
-        ></iframe>
+        <WorldMap dots={dots} />
       </div>
     </ContentLayout>
   );
