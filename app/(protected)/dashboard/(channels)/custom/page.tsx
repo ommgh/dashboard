@@ -8,6 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const DUMMY_API_VALUES = {
+  apiKey: "YOUR_API_KEY",
+  channelId: "YOUR_CHANNEL_ID",
+};
+
 export default function ConnectStorePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +23,8 @@ export default function ConnectStorePage() {
     apiKey: string;
     storeName: string;
   } | null>(null);
+
+  const displayValues = apiDetails || DUMMY_API_VALUES;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,62 +117,62 @@ export default function ConnectStorePage() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* API Documentation Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Dashboard API Integration Guide</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="font-semibold mb-2">Overview</h3>
-                    <p className="text-sm">
-                      Use the following credentials to integrate our Dashboard
-                      API into your application.
-                    </p>
-                  </div>
+        {/* API Documentation Section */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Dashboard API Integration Guide</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold mb-2">Overview</h3>
+                <p className="text-sm">
+                  Use the following credentials to integrate our Dashboard API
+                  into your application.
+                </p>
+              </div>
 
-                  <div>
-                    <h3 className="font-semibold mb-2">
-                      Required Environment Variables
-                    </h3>
-                    <div className="bg-gray-900 p-3 rounded">
-                      <p className="text-sm mb-2">
-                        <span className="font-medium">DASHBOARD_API_KEY:</span>{" "}
-                        {apiDetails.apiKey}
-                      </p>
-                      <p className="text-sm">
-                        <span className="font-medium">STORE_CHANNEL_ID:</span>{" "}
-                        {apiDetails.channelId}
-                      </p>
-                    </div>
-                  </div>
+              <div>
+                <h3 className="font-semibold mb-2">
+                  Required Environment Variables
+                </h3>
+                <div className="bg-gray-900 p-3 rounded">
+                  <p className="text-sm mb-2">
+                    <span className="font-medium">DASHBOARD_API_KEY:</span>{" "}
+                    {displayValues.apiKey}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">STORE_CHANNEL_ID:</span>{" "}
+                    {displayValues.channelId}
+                  </p>
+                </div>
+              </div>
 
-                  <div>
-                    <h3 className="font-semibold mb-2">
-                      Authentication Headers
-                    </h3>
-                    <pre className="bg-gray-900 p-3 rounded text-xs overflow-x-auto">
-                      {`headers: {
+              <div>
+                <h3 className="font-semibold mb-2">Authentication Headers</h3>
+                <pre className="bg-gray-900 p-3 rounded text-xs overflow-x-auto">
+                  {`headers: {
   "Content-Type": "application/json",
-  "Authorization": "Bearer ${apiDetails.apiKey}",
-  "X-Channel-ID": "${apiDetails.channelId}"
+  "Authorization": "Bearer ${displayValues.apiKey}",
+  "X-Channel-ID": "${displayValues.channelId}"
 }`}
-                    </pre>
-                  </div>
+                </pre>
+              </div>
 
-                  <div>
-                    <h3 className="font-semibold mb-2">
-                      Example: Sending an Order
-                    </h3>
-                    <pre className="bg-gray-900 p-3 rounded text-xs overflow-x-auto">
-                      {`fetch('/api/custom/orders', {
+              <div>
+                <h3 className="font-semibold mb-2">
+                  Example: Sending an Order
+                </h3>
+                <pre className="bg-gray-900 p-3 rounded text-xs overflow-x-auto">
+                  {`fetch('/api/custom/orders', {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer ${apiDetails.apiKey}",
-    "X-Channel-ID": "${apiDetails.channelId}"
+    "Authorization": "Bearer ${displayValues.apiKey}",
+    "X-Channel-ID": "${displayValues.channelId}"
   },
   body: JSON.stringify({
     channelOrderId: "order_123",
@@ -173,16 +180,14 @@ export default function ConnectStorePage() {
     productPrice: 49.99,
     quantity: 1,
     orderStatus: "PENDING",
-    channelId: "${apiDetails.channelId}"
+    channelId: "${displayValues.channelId}"
   })
 })`}
-                    </pre>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                </pre>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </ContentLayout>
   );

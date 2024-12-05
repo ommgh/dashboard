@@ -9,8 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import MapPage from "./map";
-import Charts from "./charts";
+
 import { WorldMap } from "@/components/ui/world-map";
 
 export default function ToolsPage() {
