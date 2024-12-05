@@ -23,56 +23,70 @@ import {
 
 // Dummy data for warehouse allocations
 const warehouseData = [
-  { name: "Warehouse A", allocation: 35 },
-  { name: "Warehouse B", allocation: 28 },
-  { name: "Warehouse C", allocation: 22 },
-  { name: "Warehouse D", allocation: 15 },
+  { name: "Chennai", allocation: 10 },
+  { name: "Lucknow", allocation: 28 },
+  { name: "Jaipur", allocation: 22 },
+  { name: "Patna", allocation: 20 },
 ];
 
 // Dummy data for geographical trends
 const geographicalData = [
-  { region: "North", orders: 1200 },
-  { region: "South", orders: 900 },
-  { region: "East", orders: 1500 },
-  { region: "West", orders: 1100 },
+  { region: "North", orders: 4 },
+  { region: "South", orders: 1 },
+  { region: "East", orders: 1 },
+  { region: "West", orders: 2 },
 ];
 
 // Dummy data for product distribution
 const productData = [
   {
-    id: 1,
-    name: "Product A",
-    stock: 500,
+    id: 1006,
+    name: "The Multi-location Snowboard",
+    stock: 10,
     strategy: "Even distribution",
-    warehouse: "A, B, C",
+    warehouse: "Patna, Lucknow, Jaipur",
   },
   {
-    id: 2,
-    name: "Product B",
-    stock: 750,
+    id: 1005,
+    name: "The Multi-location Snowboard",
+    stock: 10,
+    strategy: "Even distribution",
+    warehouse: "Patna, Lucknow, Jaipur",
+  },
+  {
+    id: 1004,
+    name: "The Compare at Price Snowboard",
+    stock: 22,
     strategy: "Centralized",
-    warehouse: "B",
+    warehouse: "Lucknow",
   },
   {
-    id: 3,
-    name: "Product C",
-    stock: 300,
-    strategy: "Regional focus",
-    warehouse: "A, D",
+    id: 590,
+    name: "White Bedsheet",
+    stock: 30,
+    strategy: "Even Distribution",
+    warehouse: "Patna, Lucknow, Jaipur, Chennai",
   },
   {
-    id: 4,
-    name: "Product D",
-    stock: 1000,
-    strategy: "High demand areas",
-    warehouse: "A, B, C, D",
+    id: 1003,
+    name: "The Multi-managed Snowboard",
+    stock: 25,
+    strategy: "Centralized",
+    warehouse: "Patna, Lucknow, Jaipur, Chennai",
   },
   {
-    id: 5,
-    name: "Product E",
-    stock: 250,
-    strategy: "Seasonal rotation",
-    warehouse: "C, D",
+    id: 1002,
+    name: "The Multi-location Snowboard",
+    stock: 18,
+    strategy: "Even distribution",
+    warehouse: "Patna, Lucknow, Jaipur",
+  },
+  {
+    id: 1001,
+    name: "The Collection Snowboard: Liquid",
+    stock: 15,
+    strategy: "Even distribution",
+    warehouse: "Patna, Lucknow, Jaipur, Chennai",
   },
 ];
 
